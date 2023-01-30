@@ -48,7 +48,7 @@ export async function getServerSideProps() {
        );
        return {
            props: {
-               viewData: res.data.data
+               viewData: res.data?.data
            }
        }
    } catch (error) {
@@ -60,6 +60,7 @@ export async function getServerSideProps() {
            }
        }
    }
+   
 }
 
 
@@ -76,12 +77,13 @@ const CustomCheckbox = withStyles({
 
 
 export default function RolesAndPriviledges({viewData}) {
-   console.log(viewData)
+   console.log(viewData.administrator_roles[0].id)
    const router = useRouter();
     const [username, setUsername] = useState("iversonweb98@gmail.com")
     const [rolename, setRolename] = useState("Super Admin")
     const [password, setPassword] = useState("Be@trice1")
     const [name, setName] = useState("User Relations")
+    const searchTerm = useSelector((state) => state.searchTerm);
     const [privileges, setPrivileges] = useState(1)
     const [modalsOpen, setModalsOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
@@ -89,18 +91,18 @@ export default function RolesAndPriviledges({viewData}) {
     const [searchResult, setSearchResult] = useState([]);
     const [open, setOpen] = useState(false)
     const [id, setId] = useState();
-    const [priviledges, setPriviledges] = useState(1)
+    const [roleId, setRoleId] = useState('');
     const [isChecked, setIsChecked] = useState(false);
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
     const [checkbox3, setCheckbox3] = useState(false);
     const [checkbox4, setCheckbox4] = useState(false);
     const [checkbox5, setCheckbox5] = useState(false);
-    
-    const searchTerm = useSelector((state) => state.searchTerm);
-
    
-    function BasicMenu({ viewLink = '', id = '' }) {
+
+   /** function to handle each user actions  */
+   function BasicMenu({ viewLink = '', id= '' }) {
+      console.log(id)
       const [anchorEl, setAnchorEl] = useState(null);
 
       const open = Boolean(anchorEl);
@@ -113,10 +115,27 @@ export default function RolesAndPriviledges({viewData}) {
          setAnchorEl(null);
       };
 
+      const handleEdit = () => {
+         handleClose();
+         setModalsOpen(true);
+
+         //iterate over the data to get single random user using filter
+         let user = viewData.administrator_roles.filter(
+            (user) => user.id === id
+         );
+         console.log(user);
+
+         setRolename(user[0].name)
+         setPrivileges(user[0].privileges[0].name)
+         setId(user[0].id);
+             
+        
+      };
+
 
       const handleDeactivateAccount = async () => {
          setAnchorEl(null);
-        
+         
          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
          const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
          const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
@@ -126,8 +145,7 @@ export default function RolesAndPriviledges({viewData}) {
             headers: {
                Authorization: `Bearer ${bearerToken} `,
                "device-token": deviceToken
-            },
-            withCredentials: true
+            }
          });
         
          await instance
@@ -140,7 +158,7 @@ export default function RolesAndPriviledges({viewData}) {
                toast.success('User deactivated successfully');
                
 
-               return res.data;
+               return res.data
                
             })
             .catch((err) => {
@@ -174,34 +192,21 @@ export default function RolesAndPriviledges({viewData}) {
                }}
             >
                <div className='flex'>
-                  {/* <MenuItem onClick={handleClose} className='p-0'>
+                  <MenuItem onClick={handleClose} className='p-0'>
                      <Link href={viewLink}>
                         <a className='p-4'>
                            <SVG.View />
                         </a>
                      </Link>
-                  </MenuItem> */}
+                  </MenuItem>
                   <MenuItem onClick={handleDeactivateAccount}>
                      <SVG.Delete />
                   </MenuItem>
                   <MenuItem
-                     onClick={() => {
-                        handleClose();
-                        setModalsOpen(true);
-
-                        // get the item from the viewData array
-                        let view = viewData?.administrator_roles.filter(
-                           (view) => view.id === id
-                        );
-
-                        setRolename(view[0]?.name);
-                        setPrivileges(view[0]?.privileges[1]?.name);
-                        setId(view[0]?.id);
-                        
-                        
-                     }}
+                     onClick={handleEdit}
                   >
-                     
+                    
+                        
                      <SVG.Edit />
                   </MenuItem>
                </div>
@@ -210,109 +215,7 @@ export default function RolesAndPriviledges({viewData}) {
       );
    }
 
-    const handleAddNewUser = async () => {
-      setLoading(true);
-        const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
-        const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
-        const instance = axios.create({
-            baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}`,
-            headers: {
-               Authorization: `Bearer ${bearerToken}`,
-               "device-token": deviceToken
-            }
-         });
-         const data = {
-            name,
-            privileges
-            
-         };
 
-         await instance
-      .post(`api/v1/admin/add-role`, data)
-      .then((res) => {
-        console.log(res.data);
-        setLoading(false);
-        setModalOpen(false);
-      
-         toast.success("Successful");
-        router.replace(router.asPath)
-         return res.data
-     })
-     .catch((err) => {
-        setLoading(false);
-        setModalOpen(false);
-        console.log(err);
-        toast.error(err.response?.data.message);
-        
-     });  
-     
-     
-    }
-
-    
-    const handleClickOpen = () => {
-        setOpen(true);
-     };
-
-     const handleClickOpening = () => {
-      setModalOpen(true)
-      setOpen(true);
-   };
-  
-    
-    const handleEditRole = async () => {
-        setLoading(true);
-        
-        const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
-        const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
-      
-         console.log(rolename, privileges);
-        const instance = axios.create({
-            baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}`,
-            headers: {
-               Authorization: `Bearer ${bearerToken}`,
-               "device-token": deviceToken
-            }
-         });
-        
-         const data = {
-            name: rolename,
-            privileges,
-           id
-         };
-         
-         await instance
-      .post(`api/v1/admin/edit-role/${id}`, data)
-      .then((res) => {
-        console.log(res.data);
-        setLoading(false);
-        setOpen(false);
-      
-         toast.success("Saved Successfully");
-
-        router.replace(router.asPath)
-         return res.data
-     })
-     .catch((err) => {
-        setLoading(false);
-        setOpen(false);
-        console.log(err);
-        toast.error(err.response?.data.message);
-        
-     });  
-     
-     
-    }
-
-    useEffect(() => {
-        if (!searchTerm) return;
-  
-        const result = tableSearch({
-           searchTerm,
-           dataList: viewData?.administrator_roles,
-        });
-        setSearchResult(result);
-     }, [viewData?.administrator_roles, searchTerm]);
 
     
     const RoleComponent = () => {
@@ -383,7 +286,7 @@ export default function RolesAndPriviledges({viewData}) {
             name: item.name,
             priviledges:item.privileges[0]?.name ,
             date: item.privileges[0]?.created_at, // '08-Oct-2022 12:46PM';
-            
+            action: item.id
          };
         
       }
@@ -391,14 +294,115 @@ export default function RolesAndPriviledges({viewData}) {
    } else {
       rows = [];
    }
-   console.log(viewData.administrator_roles)
+   console.log(rows)
 
+   const handleAddNewUser = async () => {
+      setLoading(true);
+        const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
+        const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
+        const instance = axios.create({
+            baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+            headers: {
+               Authorization: `Bearer ${bearerToken}`,
+               "device-token": deviceToken
+            }
+         });
+         const data = {
+            name,
+            privileges
+            
+         };
 
-   //  const data = useMemo(() => [
-   //      { role: 'Super Admin', support: true, reconcilation: true, testing: true },
-   //      { role: 'Account Admin', support: false, reconcilation: true, testing: false },
-   //      { role: 'Account User', support: false, reconcilation: false, testing: true },
-   //  ], [])
+         await instance
+      .post(`api/v1/admin/add-role`, data)
+      .then((res) => {
+        console.log(res.data);
+        setLoading(false);
+        setModalOpen(false);
+      
+         toast.success("Successful");
+        router.replace(router.asPath)
+         return res.data
+     })
+     .catch((err) => {
+        setLoading(false);
+        setModalOpen(false);
+        console.log(err);
+        toast.error(err.response?.data.message);
+        
+     });  
+     
+     
+    }
+
+    
+    const handleClickOpen = () => {
+        setOpen(true);
+     };
+
+     const handleClickOpening = () => {
+      setModalOpen(true)
+      setOpen(true);
+   };
+  
+    
+    const handleEditRole = async () => {
+        setLoading(true);
+        
+        const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
+        const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
+      
+         console.log(rolename, privileges, id);
+        const instance = axios.create({
+            baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+            headers: {
+               Authorization: `Bearer ${bearerToken}`,
+               "device-token": deviceToken
+            }
+         });
+        
+         const data = {
+            name: rolename,
+            privileges,
+           id
+         };
+         
+         await instance
+      .post(`api/v1/admin/edit-role/${id}`, data)
+      .then((res) => {
+        console.log(res.data);
+        setLoading(false);
+        setModalsOpen(false)
+        setOpen(false);
+      
+         toast.success("Saved Successfully");
+
+        router.replace(router.asPath)
+         return res.data
+     })
+     .catch((err) => {
+        setLoading(false);
+        setModalsOpen(false)
+        setOpen(false);
+        console.log(err);
+        toast.error(err.response?.data.message);
+        
+     });  
+     
+     
+    }
+
+    useEffect(() => {
+        if (!searchTerm) return;
+  
+        const result = tableSearch({
+           searchTerm,
+           dataList: viewData?.administrator_roles,
+        });
+        setSearchResult(result);
+     }, [viewData?.administrator_roles, searchTerm]);
+
+    
 
     return (
         <Layout title={'Roles and Priviledges'}>
@@ -587,13 +591,7 @@ export default function RolesAndPriviledges({viewData}) {
             onClick={handleEditRole}
          >
             <>
-                <LabelInput
-                  label='username'
-                  placeholder='Username'
-                  value={username}
-                  setState={setUsername}
-               /> 
-               
+                               
                   <LabelInput
                      label='Name'
                      placeholder='Your Name'
@@ -603,7 +601,7 @@ export default function RolesAndPriviledges({viewData}) {
                   <LabelInput
                   label='Priviledges'
                   combo
-                  menuItems={['Tester', 'Admin', 'Add User', 'Disable User']}
+                  menuItems={['Super Admin', 'create-admin', 'view-admin', 'edit-admin', 'delete-admin', 'restore-admin']}
                   setState={setPrivileges}
                   value={privileges}
                />
