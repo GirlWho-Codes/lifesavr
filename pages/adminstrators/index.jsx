@@ -229,13 +229,13 @@ const Administrator = ({ status, adminData }) => {
             Header: 'Date Joined',
             accessor: 'dateJoined',
          },
-         {
-            Header: 'Action',
-            accessor: 'action',
-            Cell: ({ value }) => (
-               <BasicMenu id={value} viewLink={`/adminstrators/${value}`} />
-            ),
-         },
+//          {
+//             Header: 'Action',
+//             accessor: 'action',
+//             Cell: ({ value }) => (
+//                <BasicMenu id={value} viewLink={`/adminstrators/${value}`} />
+//             ),
+//          },
       ],
       []
    );
