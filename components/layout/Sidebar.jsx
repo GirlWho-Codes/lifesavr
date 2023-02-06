@@ -50,7 +50,7 @@ const Sidebar = ({ isSideBarOpen, setIsSideBarOpen }) => {
                <NavItem icon={<SVG.Home />} label='Home' link='/dashboard' />
                <NavItem icon={<SVG.Users />} label='Users' />
                <NavItem icon={<SVG.Products />} label='Products' />
-               <NavItem icon={<SVG.Transactions />} label='Transactions' />
+               {/* <NavItem icon={<SVG.Transactions />} label='Transactions' /> */}
                <NavItem icon={<SVG.Adminstrators />} label='Adminstrators' />
                <NavItem
                   icon={<SVG.Roles />}
