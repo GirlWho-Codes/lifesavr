@@ -300,16 +300,16 @@ const PersonalSavings = ({personalData }) => {
                <span>Products</span>
                <SVG.DoubleRight />
                <span>Products</span>
-               <SVG.DoubleRight />
-               <span>Personal Savings</span>
+               {/* <SVG.DoubleRight />
+               <span>Life Safe</span> */}
                <SVG.DoubleRight />{' '}
-               <span className='text-[#999999]'>Transactions</span>
+               <span className='text-[#999999]'>Life Safe</span>
                
             </span>
          }
-         title='Personal Savings'
+         title='Life Safe'
       >
-         <SubPageHeader label='Personal Savings' />
+         <SubPageHeader label='Life Safe' />
 
          <div className='md:flex md:justify-between md:items-center mt-2.5 md:mt-5 mb-5 md:mb-10'>
             <div className='space-x-2.5 lg:space-x-5'>

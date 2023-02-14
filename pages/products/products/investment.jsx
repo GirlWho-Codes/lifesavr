@@ -3,10 +3,50 @@ import Image from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react';
 import CurrencyFormat from 'react-currency-format';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { DataTable, Layout, SubPageHeader, SVG } from '../../../components';
 import { tableSearch } from '../../../utils/tableSearch';
 
-const Investment = () => {
+
+/**
+ * This is a getServerSideProps function thats help fetch personal savings data from server before the page loads
+ */
+export async function getServerSideProps() {
+   const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
+   const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
+   const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/view-investment-companies`,
+      {
+         headers: {
+            Authorization: `Bearer ${bearerToken}`,
+            "device-token": deviceToken
+         }
+      }
+      )
+      .then((res) => {
+         console.log(res)
+         return {
+            props: {
+               personalData: res.data
+            }
+         }
+      })
+      .catch((error) => {
+         console.log(error)
+         return {
+            props:{
+               personalData: null
+            }
+            
+         };
+      });
+ 
+   return  res
+      
+   
+}
+const Investment = ({personalData}) => {
+   console.log(personalData)
    const [filter, setFilter] = React.useState('all transactions');
    const [searchResult, setSearchResult] = useState([])
    const searchTerm = useSelector(state => state.searchTerm)

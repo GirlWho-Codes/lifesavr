@@ -1,58 +1,18 @@
-// import { Button, Chip } from '@mui/material';
-// import axios from 'axios';
+// import { AvatarGroup, Button, Chip, Hidden } from '@mui/material';
 // import Image from 'next/image';
 // import React, { useEffect, useMemo, useState } from 'react';
 // import CurrencyFormat from 'react-currency-format';
 // import { useSelector } from 'react-redux';
-// import { DataTable, Layout, SubPageHeader, SVG } from '../../../components';
+// import {
+//     Avatars,
+//     DataTable,
+//     Layout,
+//     SubPageHeader,
+//     SVG
+// } from '../../../components';
 // import { tableSearch } from '../../../utils/tableSearch';
 
-// /**
-//  * This is a getServerSideProps function thats help fetch personal savings data from server before the page loads
-//  */
-// export async function getServerSideProps() {
-//    const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
-//    const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
-//    const res = await axios.get(
-//       `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/personal-savings`,
-//       {
-//          headers: {
-//             Authorization: `Bearer ${bearerToken}`,
-//             "device-token": deviceToken
-//          }
-//       }
-//       )
-//       .then((res) => {
-//          console.log(res)
-//          return {
-//             props: {
-//                personalData: res.data.data
-//             }
-//          }
-//       })
-//       .catch((error) => {
-//          console.log(error)
-//          return {
-//             props:{
-//                personalData: null
-//             }
-            
-//          };
-//       });
- 
-//    return  res
-      
-   
-// }
-
-// const PersonalSavings = ({personalData }) => {
-//    // console.log(
-//    //    '🚀 ~ file: personal.jsx ~ line 35 ~ PersonalSavings ~ status',
-//    //    status
-//    // );
-//    console.log(
-//       personalData
-//    );
+// const Thrift = () => {
 //    const [filter, setFilter] = React.useState('all transactions');
 //    const [searchResult, setSearchResult] = useState([]);
 //    const searchTerm = useSelector((state) => state.searchTerm);
@@ -60,17 +20,11 @@
 //    const columns = React.useMemo(
 //       () => [
 //          {
-//             Header: 'user',
-//             accessor: 'user',
+//             Header: 'Group',
+//             accessor: 'group',
 //             Cell: ({ value }) => (
 //                <div className='flex justify-start items-center gap-2'>
-//                   <div className='h-[30px] w-[30px] lg:h-[50px] lg:w-[50px] relative'>
-//                      <Image
-//                         src={`/images/${value[1]}.png`}
-//                         alt={value[0]}
-//                         layout='fill'
-//                      />
-//                   </div>
+//                   <Avatars images={value[1]} />
 //                   <span>{value[0]}</span>
 //                </div>
 //             ),
@@ -142,38 +96,95 @@
 //       );
 //    };
 
-//    /**
-//     * Datagrid row data
-//     */
-//    let rows;
-//    // check if personalSavingData is an array
-//    if (typeof personalData === 'object' &&
-//    personalData && Array.isArray(personalData) ) {
-//       rows = personalData.map((item) => {
-     
-//          return {
-//             user: [item.name, 'person1'],
-//             service: item?.transaction_history[0]?.transaction_type,
-//             amount: item?.transaction_history[0]?.amount,
-//             paymentMethod: item?.transaction_history[0]?.payment_type,
-//             date: item?.transaction_history[0]?.transaction_time,
-//             status: item.transaction_history[0]?.status
-            
-//          };
-         
-//       });
-//    } else {
-//       rows = [];
-//    }
-   
-//    console.log(rows)
+//    const data = React.useMemo(
+//       () => [
+//          {
+//             group: [
+//                'Devon Lane',
+//                ['person1', 'person2', 'person3', 'person4', 'person4'],
+//             ],
+//             service: 'Fund Withdrawal',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Successful',
+//          },
+//          {
+//             group: ['Arlene Mocoy', ['person3']],
+//             service: 'Fund Withdrawal',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Pending',
+//          },
+//          {
+//             group: ['Wade Warren', ['person1', 'person3']],
+//             service: 'Fund Withdrawal',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Failed',
+//          },
+//          {
+//             group: [
+//                'Wade Warren',
+//                ['person2', 'person3', 'person3', 'person4', 'person4'],
+//             ],
+//             service: 'Fund Withdrawal',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Successful',
+//          },
+//          {
+//             group: [
+//                'Arlene Mocoy',
+//                ['person1', 'person4', 'person3', 'person4', 'person4'],
+//             ],
+//             service: 'Fund Deposit',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Pending',
+//          },
+//          {
+//             group: ['Devon Lane', ['person4', 'person3', 'person1', 'person4']],
+//             service: 'Fund Deposit',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Failed',
+//          },
+//          {
+//             group: ['Leslie Alexander', ['person1', 'person2', 'person3']],
+//             service: 'Fund Deposit',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Successful',
+//          },
+//          {
+//             group: [
+//                'Devon Lane',
+//                ['person1', 'person2', 'person3', 'person4', 'person4'],
+//             ],
+//             service: 'Fund Deposit',
+//             amount: '5000',
+//             paymentMethod: 'Debit Card',
+//             date: 'Oct 4, 2020 2:14pm',
+//             status: 'Pending',
+//          },
+//       ],
+//       []
+//    );
+
 //    const filterData = useMemo(() => {
 //       if (filter === 'all transactions') {
-//          return rows;
+//          return data;
 //       } else {
-//          return rows.filter((item) => item.status === filter);
+//          return data.filter((item) => item.status === filter);
 //       }
-//    }, [rows, filter]);
+//    }, [data, filter]);
 
 //    useEffect(() => {
 //       if (!searchTerm) return;
@@ -193,12 +204,12 @@
 //                <SVG.DoubleRight />
 //                <span>Products</span>
 //                <SVG.DoubleRight />{' '}
-//                <span className='text-[#999999]'>Personal Savings</span>
+//                <span className='text-[#999999]'>Thrift</span>
 //             </span>
 //          }
-//          title='Personal Savings'
+//          title='Thrift'
 //       >
-//          <SubPageHeader label='Personal Savings' />
+//          <SubPageHeader label='Thrift' />
 
 //          <div className='md:flex md:justify-between md:items-center mt-2.5 md:mt-5 mb-5 md:mb-10'>
 //             <div className='space-x-2.5 lg:space-x-5'>
@@ -224,4 +235,4 @@
 //    );
 // };
 
-// export default PersonalSavings;
+// export default Thrift;

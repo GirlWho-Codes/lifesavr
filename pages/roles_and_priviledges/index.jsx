@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { DataTable, Layout, Modals, LabelInput } from "../../components";
 import Image from "next/image";
-// import ToyAvatar from '../assets/img/toy-avatar.png'
-// import person1 from '../assets/img/person1.png'
-// import { AvatarGroup } from "@mui/material";
+
+
 import { useMemo } from "react";
 import axios from 'axios';
 import { toast } from 'react-toastify';

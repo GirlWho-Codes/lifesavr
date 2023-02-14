@@ -1,208 +1,77 @@
+import axios from 'axios';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import ToyAvatar from '../../assets/img/toy-avatar.png';
+import { Layout, SVG } from '../../components';
 import {
-   Avatar,
-   Button,
-   FormControl,
-   FormGroup,
-   IconButton,
- } from '@mui/material';
- import axios from 'axios';
- import e from 'cors';
- import Image from 'next/image';
- import React, { useEffect, useState } from 'react';
- import { useSelector } from 'react-redux';
- import { toast } from 'react-toastify';
- import {
-   DataTable,
-   LabelInput,
-   Layout,
-   Modals,
-   SearchBox,
-   SVG,
- } from '../../components';
- import Link from 'next/link';
- import { Menu, MenuItem } from '@mui/material';
- 
- import { tableSearch } from '../../utils/tableSearch';
- 
- /**
+   
+   PersonalInfo,
+   PersonalSaving,
+   
+} from '../../components/sections/goals';
+import person2 from '../../assets/img/person2.png';
+
+/**
  * This is a getServerSideProps function thats help fetch users from server before the page loads
  */
- export async function getServerSideProps() {
-   let status, adminData;
-   try{
-      const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
+export async function getServerSideProps(ctx) {
+   const {
+      query: { id },
+   } = ctx;
+   const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
       const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
- 
-      const response = await axios.get (
-         `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/view-admins`,
-         {
-            headers: {
-               
-               Authorization: `Bearer ${bearerToken}`,
-               "Device-Token": deviceToken
-            }
- 
+   const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/view-admin/${id}`,
+      {
+         headers: {
+            Authorization: `Bearer ${bearerToken}`,
+            "device-token": deviceToken
          }
-      );
-      status = response.status;
-      adminData = response.data?.data;
-      console.log(response.data)
+      }
       
- 
-   } catch(error) {
-         
-            status= error.response?.status,
-            adminData= null
-            // data ={ data: error.response?.statusText },
-            console.log(error)
-      };
+   )
+   .then((res) => {
       
-      return {
+      return{
          props: {
-            // status,
-            adminData,
-         },
-      };
+            adminData: res.data.data
+         }
+         
+      }
       
+   })
+   .catch((error) => {
+      
+      return{
+         props: {
+            adminData: null
+         }
+      }
+   });
    
+   return res
    
- }
- 
- const Administrator = ({ status, adminData }) => {
+}
+
+export default function GoalSavings({ adminData }) {
+    console.log(adminData)
+    
+   const router = useRouter();
+   const [currentTab, setCurrentTab] = useState(0);
+
+   const tabs = [
+      {
+         heading: 'Fixed saving details',
+         // component: <PersonalInfo adminData={adminData} />,
+      },
+      {
+         heading: 'Transactions',
+         // component: <PersonalSaving adminData={adminData} />,
+      },
    
-   const [open, setOpen] = React.useState(false);
-   const [firstName, setFirstName] = React.useState('Wale');
-   const [lastName, setLastName] = React.useState('Andrew');
-   const [phoneNumber, setPhoneNumber] = React.useState('08012345678');
-   const [password, setPassword] = React.useState('111111111');
-   const [role, setRole] = React.useState('1');
-   const [fileOn, setFileOn] = useState(null);
-   const [profilePic, setProfilePic] = useState("")
-   const [profilePhoto, setProfilePhoto] = React.useState(null);
-   const [email, setEmail] = React.useState('waleAn@gmail.com');
-   const [gender, setGender] = React.useState('male');
-   const [loading, setLoading] = React.useState(false);
-   const [searchResult, setSearchResult] = useState([]);
-   const searchTerm = useSelector((state) => state.searchTerm);
-   
- 
-   function BasicMenu({ viewLink = '', id = '' }) {
-      const [anchorEl, setAnchorEl] = React.useState(null);
- 
-      const open = Boolean(anchorEl);
- 
-      const handleClick = (event) => {
-         setAnchorEl(event.currentTarget);
-      };
- 
-      const handleClose = () => {
-         setAnchorEl(null);
-      };
- 
- 
-      const handleDeactivateAccount = async () => {
-         setAnchorEl(null);
-        
-         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-         const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
-         const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
- 
-         const instance = axios.create({
-            baseURL: `${baseUrl}`,
-            headers: {
-               Authorization: `Bearer ${bearerToken} `,
-               "device-token": deviceToken
-            }
-         });
-        
-         await instance
-            .post(`/api/v1/admin/users/delete/${id}`, {status: 'deactivated'})
-            
-            .then((res) => {
-               console.log(res);
-               
-               router.replace(router.asPath)
-               toast.success('User deactivated successfully');
-               
- 
-               return res.data
-               
-            })
-            .catch((err) => {
-               console.log(err);
-              
-            });
-      };
- 
-      return (
-         <div>
-            <IconButton
-               className='p-2'
-               aria-controls={open ? 'basic-menu' : undefined}
-               aria-haspopup='true'
-               aria-expanded={open ? 'true' : undefined}
-               onClick={handleClick}
-            >
-               <SVG.DotsHambugger />
-            </IconButton>
-            <Menu
-               anchorEl={anchorEl}
-               open={open}
-               onClose={handleClose}
-               MenuListProps={{
-                  'aria-labelledby': 'basic-button',
-               }}
-               sx={{
-                  '& .MuiList-root': {
-                     padding: 0,
-                  },
-               }}
-            >
-               <div className='flex'>
-                  <MenuItem onClick={handleClose} className='p-0'>
-                     <Link href={viewLink}>
-                        <a className='p-4'>
-                           <SVG.View />
-                        </a>
-                     </Link>
-                  </MenuItem>
-                  <MenuItem onClick={handleDeactivateAccount}>
-                     <SVG.Delete />
-                  </MenuItem>
-                  <MenuItem
-                     onClick={() => {
-                        handleClose();
-                        setModalOpen(true);
- 
-                        let item = adminData.filter(
-                           (item) => item.id === id
-                        );
- 
-                        setFirstName(item[0].first_name);
-                        setLastName(item[0].last_name);
-                        setGender(item[0].gender.toLowerCase());
-                        setPhoneNumber(item[0].phone_number);
-                        setEmail(item[0].email);
-                        setPassword(item[0].password);
-                        setPassword(item[0].role_id);
-                        setId(item[0].profile_photo);
-                     }}
-                  >
-                    
-                        
-                     <SVG.Edit />
-                  </MenuItem>
-               </div>
-            </Menu>
-         </div>
-      );
-   }
- 
-  
-   
- 
-   
- 
+   ];
+
    return (
       <Layout title='Administrator'>
          <div className='md:flex md:justify-between md:items-center mb-3 lg:mb-5'>
@@ -213,41 +82,47 @@ import {
             </div>
                       
          </div>
-         <div className="p-5 col-span-1 flex flex-col items-center justify-center gap-5 rounded-xl h-full border-2 border-[#FF4500]">
-          <div className='flex flex-row gap-80 items-stretch justify-between'>
-             <div>
-             <img src="" alt="" />
-             <h1>Name</h1>
-             </div>
+         <div className="p-5 col-span-1 flex flex items-center justify-between gap-5 rounded-xl h-full border-2 border-[#FF4500]">
+          {/* <div className='flex flex-row gap-80 items-stretch justify-between'> */}
+          <div className='flex justify-center items-center gap-5 sm:gap-10'>
+               <Image
+                  className='w-full h-full'
+                  src={
+                     adminData?.profile_phone ? adminData.profile_phone : person2
+                  }
+                  alt='lifesaver user'
+               />
+               <span className='text-lg sm:text-xl font-bold'>{adminData?.first_name + " " + adminData?.last_name}</span>
+            </div>
              <div className="">
-                <p className=' '>Role</p>
-                <h1>Super Admin</h1>
+                <p className='text-sm sm:text-xl'>Role</p>
+                <p className='text-xs sm:text-xl'>{adminData.role.name}</p>
              </div>
-          </div>
+          {/* </div> */}
             </div>
  
             <div className='mt-10 flex flex-col gap-7 flex-[50%]  font-medium text-slate-400'>
              <div className='flex gap-20'>
              <p>Email</p>
-             <p>EMail</p>
+             <p>{adminData.email}</p>
              </div>
              <div style={{border: '1px solid #ccc'}} />
              
              <div className='flex gap-20'>
-             <p>Lorem</p>
-             <p>EMail</p>
+             <p>Phone</p>
+             <p>{adminData.phone_number}</p>
              </div>
              <div style={{border: '1px solid #ccc'}} />
              
-             <div className='flex gap-10'>
-             <p>Date Joined</p>
-             <p>EMail</p>
+             <div className='flex gap-20'>
+             <p>Gender</p>
+             <p>{adminData.gender}</p>
              </div>
              <div style={{border: '1px solid #ccc'}} />
              
              <div className='flex gap-11 '>
              <p>Priviledges</p>
-             <p>EMail</p>
+             <p>{adminData?.role?.privileges?.map((item) => <ul>{item.name}</ul>)}</p>
              </div>
              
             </div>
@@ -256,8 +131,4 @@ import {
          
       </Layout>
    );
- };
- 
- export default Administrator;
- 
- 
+}
