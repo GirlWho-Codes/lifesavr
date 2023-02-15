@@ -208,7 +208,7 @@ const Administrator = ({ status, adminData }) => {
                <div className='flex justify-start items-center gap-2'>
                   <div className='h-[30px] w-[30px] lg:h-[50px] lg:w-[50px] relative'>
                      <Image
-                        src={`/images/${value[1]}`}
+                        src={`/images/${value[1]}.png`}
                         alt={value[0]}
                         layout='fill'
                      />
@@ -229,13 +229,13 @@ const Administrator = ({ status, adminData }) => {
             Header: 'Date Joined',
             accessor: 'dateJoined',
          },
-//          {
-//             Header: 'Action',
-//             accessor: 'action',
-//             Cell: ({ value }) => (
-//                <BasicMenu id={value} viewLink={`/adminstrators/${value}`} />
-//             ),
-//          },
+         {
+            Header: 'Action',
+            accessor: 'action',
+            Cell: ({ value }) => (
+               <BasicMenu id={value} viewLink={`/adminstrators/${value}`} />
+            ),
+         },
       ],
       []
    );
@@ -249,7 +249,7 @@ const Administrator = ({ status, adminData }) => {
    if (typeof adminData === 'object' && Array.isArray(adminData) ) {
       rows = adminData?.map((item) => {
          return {
-            name: [item.name, item.profile_photo],
+            name: [item.name, 'person1'],
             role: item.role.name,
             email: item.email,
             dateJoined: item.null, //'Today, 2:14pm',
@@ -372,7 +372,7 @@ const Administrator = ({ status, adminData }) => {
          >
             <>
                <div className='flex'>
-                  <div className='w-1/2 col-center'>
+                  {/* <div className='w-1/2 col-center'>
                      <input
                         accept='image/*'
                         style={{ display: 'none' }}
@@ -402,7 +402,7 @@ const Administrator = ({ status, adminData }) => {
                            Upload
                         </Button>
                      </label>
-                  </div>
+                  </div> */}
                   <div className='w-full'>
                      <LabelInput
                         label='First name'

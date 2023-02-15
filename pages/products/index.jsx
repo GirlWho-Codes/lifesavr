@@ -41,30 +41,30 @@ const Products = () => {
 
             <div className='grid grid-cols-2 lg:grid-cols-5 gap-2.5 lg:gap-5 mt-5 lg:mt-10'>
                <ProductComponent
-                  label='Personal'
+                  label='Life Safe'
                   svg={<SVG.UserProducts />}
                   href='products/personal'
                />
                <ProductComponent
-                  label='Fixed Savings'
+                  label='Fixed Safe'
                   svg={<SVG.FixedSavingsProducts />}
                   href='products/fixedSavings'
                />
                <ProductComponent
-                  label='Group Savings'
+                  label='Savings Challenge'
                   svg={<SVG.GroupSavingsProducts />}
                   href='products/groupSavings'
                />
                <ProductComponent
-                  label='Thrift'
+                  label='Goal Safe'
                   svg={<SVG.ThriftProducts />}
-                  href='products/thrift'
+                  href='products/goalSavings'
                />
-               <ProductComponent
+               {/* <ProductComponent
                   label='Investment'
                   svg={<SVG.InvestmentProducts />}
                   href='products/investment'
-               />
+               /> */}
             </div>
          </section>
 

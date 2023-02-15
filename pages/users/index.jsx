@@ -175,6 +175,7 @@ export default function Users({userData}) {
                         let user = userData.users.filter(
                            (user) => user.id === id
                         );
+                        console.log(user);
 
                         setUsername(user[0].username);
                         setFirstName(user[0].first_name);

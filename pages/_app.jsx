@@ -9,7 +9,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
 import store from '../utils/store';
-
 import {SessionProvider} from 'next-auth/react'
 
 const theme = createTheme({

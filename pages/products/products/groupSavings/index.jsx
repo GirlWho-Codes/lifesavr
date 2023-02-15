@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { tableSearch } from '../../../../utils/tableSearch';
 import { DataTable, Layout,  LabelInput, SVG, SubPageHeader } from "../../../../components"
-import {Modals, ModalHeaders, ModalBody} from '../../../../components/modal'
+import {Modals} from '../../../../components/modal'
 
 
 /**
@@ -19,7 +19,7 @@ export async function getServerSideProps() {
    const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
    
    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/fixed-savings`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/clique-savings`,
       {
          headers: {
             Authorization: `Bearer ${bearerToken}`,
@@ -31,7 +31,7 @@ export async function getServerSideProps() {
          console.log(res)
          return {
             props: {
-               personalData: res.data.data
+               cliqueData: res.data.data
             }
          }
       })
@@ -39,7 +39,7 @@ export async function getServerSideProps() {
          console.log(error)
          return {
             props:{
-               personalData: null
+               cliqueData: null
             }
             
          };
@@ -50,13 +50,13 @@ export async function getServerSideProps() {
    
 }
 
-const FixedSavings = ({personalData }) => {
+const SavingChallenge = ({cliqueData }) => {
    // console.log(
-   //    '🚀 ~ file: personal.jsx ~ line 35 ~ PersonalSavings ~ status',
+   //    '🚀 ~ file: personal.jsx ~ line 35 ~ SavingChallenge ~ status',
    //    status
    // );
    console.log(
-      personalData
+      cliqueData
    );
    const [filter, setFilter] = useState('all transactions');
    const [modalOpen, setModalOpen] = useState(false);
@@ -84,7 +84,7 @@ const FixedSavings = ({personalData }) => {
 
       const handleDeactivateAccount = async () => {
          setAnchorEl(null);
-         
+         setLoadingState(true)
          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
          const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
          const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
@@ -102,7 +102,7 @@ const FixedSavings = ({personalData }) => {
             
             .then((res) => {
                console.log(res);
-              
+               setLoadingState(true)
                router.replace(router.asPath)
                toast.success('User deactivated successfully');
                
@@ -159,7 +159,7 @@ const FixedSavings = ({personalData }) => {
    const columns = React.useMemo(
       () => [
          {
-            Header: 'user',
+            Header: 'User',
             accessor: 'user',
             Cell: ({ value }) => (
                <div className='flex justify-start items-center gap-2'>
@@ -175,8 +175,8 @@ const FixedSavings = ({personalData }) => {
             ),
          },
          {
-            Header: 'Service',
-            accessor: 'service',
+            Header: 'Members',
+            accessor: 'members',
          },
          {
             Header: 'Amount',
@@ -191,37 +191,37 @@ const FixedSavings = ({personalData }) => {
             ),
          },
          {
-            Header: 'Payment Method',
-            accessor: 'paymentMethod',
+            Header: 'Frequency',
+            accessor: 'frequency',
          },
          {
             Header: 'Date',
             accessor: 'date',
          },
-         {
-            Header: 'Status',
-            accessor: 'status',
-            Cell: ({ value }) => {
-               return (
-                  <span
-                     className={`px-2.5 py-1 lg:px-5 lg:py-2 rounded-full ${
-                        value === 'successful'
-                           ? 'text-[#4AAE8C] bg-[#DEFFEE]'
-                           : value === 'pending'
-                           ? 'text-[#F7936F] bg-[#FDF6EF]'
-                           : 'text-[#F16063] bg-[#FCEAE8]'
-                     }`}
-                  >
-                     {value}
-                  </span>
-               );
-            },
-         },
+         // {
+         //    Header: 'Status',
+         //    accessor: 'status',
+         //    Cell: ({ value }) => {
+         //       return (
+         //          <span
+         //             className={`px-2.5 py-1 lg:px-5 lg:py-2 rounded-full ${
+         //                value === 'successful'
+         //                   ? 'text-[#4AAE8C] bg-[#DEFFEE]'
+         //                   : value === 'pending'
+         //                   ? 'text-[#F7936F] bg-[#FDF6EF]'
+         //                   : 'text-[#F16063] bg-[#FCEAE8]'
+         //             }`}
+         //          >
+         //             {value}
+         //          </span>
+         //       );
+         //    },
+         // },
          {
             Header: 'Action',
             accessor: 'action',
             Cell: ({ value }) => (
-               <BasicMenu id={value} viewLink={`/products/products/fixedSavings/${value}`} />
+               <BasicMenu id={value} viewLink={`/products/products/groupSavings/${value}`} />
             ),
          },
       ],
@@ -253,17 +253,17 @@ const FixedSavings = ({personalData }) => {
     */
    let rows;
    // check if personalSavingData is an array
-   if (typeof personalData === 'object' &&
-   personalData && Array.isArray(personalData) ) {
-      rows = personalData.map((item) => {
+   if (typeof cliqueData === 'object' &&
+   cliqueData && Array.isArray(cliqueData) ) {
+      rows = cliqueData.map((item) => {
      
          return {
             user: [item.name, 'person1'],
-            service: item?.transaction_history[0]?.transaction_type,
-            amount: item?.transaction_history[0]?.amount,
-            paymentMethod: item?.transaction_history[0]?.payment_type,
-            date: item?.transaction_history[0]?.transaction_time,
-            status: item.transaction_history[0]?.status,
+            members: item?.total_members,
+            amount: item?.autosave_settings?.target_amount,
+            frequency: item?.autosave_settings?.deposit_frequency,
+            date: item?.autosave_settings?.start_date,
+            // status: item.transaction_history[0]?.status,
             action: item.account_id
             
          };
@@ -301,15 +301,15 @@ const FixedSavings = ({personalData }) => {
                <SVG.DoubleRight />
                <span>Products</span>
                {/* <SVG.DoubleRight />
-               <span>Fixed Savings</span> */}
+               <span>Life Safe</span> */}
                <SVG.DoubleRight />{' '}
-               <span className='text-[#999999]'>Fixed Safe</span>
+               <span className='text-[#999999]'>Savings Challenge</span>
                
             </span>
          }
-         title='Fixed Safe'
+         title='Savings Challenge'
       >
-         <SubPageHeader label='Fixed Safe' />
+         <SubPageHeader label='Savings Challenge' />
 
          <div className='md:flex md:justify-between md:items-center mt-2.5 md:mt-5 mb-5 md:mb-10'>
             <div className='space-x-2.5 lg:space-x-5'>
@@ -342,7 +342,7 @@ const FixedSavings = ({personalData }) => {
          >
             
            {
-         //   personalData.map((personal) => {
+         //   cliqueData.map((personal) => {
 
             <div>
             <div className='flex justify-center'>
@@ -410,15 +410,11 @@ const FixedSavings = ({personalData }) => {
             </div>
 
 
-           }
-           
-              
-
-                
+           }           
         
          </Modals>
       </Layout>
    );
 };
 
-export default FixedSavings;
+export default SavingChallenge;

@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { tableSearch } from '../../../../utils/tableSearch';
 import { DataTable, Layout,  LabelInput, SVG, SubPageHeader } from "../../../../components"
-import {Modals, ModalHeaders, ModalBody} from '../../../../components/modal'
+import {Modals} from '../../../../components/modal'
 
 
 /**
@@ -19,7 +19,7 @@ export async function getServerSideProps() {
    const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
    
    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/fixed-savings`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/admin/goal-savings`,
       {
          headers: {
             Authorization: `Bearer ${bearerToken}`,
@@ -31,7 +31,7 @@ export async function getServerSideProps() {
          console.log(res)
          return {
             props: {
-               personalData: res.data.data
+               goalData: res.data.data
             }
          }
       })
@@ -39,7 +39,7 @@ export async function getServerSideProps() {
          console.log(error)
          return {
             props:{
-               personalData: null
+               goalData: null
             }
             
          };
@@ -50,13 +50,10 @@ export async function getServerSideProps() {
    
 }
 
-const FixedSavings = ({personalData }) => {
-   // console.log(
-   //    '🚀 ~ file: personal.jsx ~ line 35 ~ PersonalSavings ~ status',
-   //    status
-   // );
+const goalSavings = ({goalData }) => {
+
    console.log(
-      personalData
+      goalData
    );
    const [filter, setFilter] = useState('all transactions');
    const [modalOpen, setModalOpen] = useState(false);
@@ -84,7 +81,7 @@ const FixedSavings = ({personalData }) => {
 
       const handleDeactivateAccount = async () => {
          setAnchorEl(null);
-         
+         setLoadingState(true)
          const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
          const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
          const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
@@ -102,7 +99,7 @@ const FixedSavings = ({personalData }) => {
             
             .then((res) => {
                console.log(res);
-              
+               setLoadingState(true)
                router.replace(router.asPath)
                toast.success('User deactivated successfully');
                
@@ -159,7 +156,7 @@ const FixedSavings = ({personalData }) => {
    const columns = React.useMemo(
       () => [
          {
-            Header: 'user',
+            Header: 'User',
             accessor: 'user',
             Cell: ({ value }) => (
                <div className='flex justify-start items-center gap-2'>
@@ -198,30 +195,30 @@ const FixedSavings = ({personalData }) => {
             Header: 'Date',
             accessor: 'date',
          },
-         {
-            Header: 'Status',
-            accessor: 'status',
-            Cell: ({ value }) => {
-               return (
-                  <span
-                     className={`px-2.5 py-1 lg:px-5 lg:py-2 rounded-full ${
-                        value === 'successful'
-                           ? 'text-[#4AAE8C] bg-[#DEFFEE]'
-                           : value === 'pending'
-                           ? 'text-[#F7936F] bg-[#FDF6EF]'
-                           : 'text-[#F16063] bg-[#FCEAE8]'
-                     }`}
-                  >
-                     {value}
-                  </span>
-               );
-            },
-         },
+         // {
+         //    Header: 'Status',
+         //    accessor: 'status',
+         //    Cell: ({ value }) => {
+         //       return (
+         //          <span
+         //             className={`px-2.5 py-1 lg:px-5 lg:py-2 rounded-full ${
+         //                value === 'successful'
+         //                   ? 'text-[#4AAE8C] bg-[#DEFFEE]'
+         //                   : value === 'pending'
+         //                   ? 'text-[#F7936F] bg-[#FDF6EF]'
+         //                   : 'text-[#F16063] bg-[#FCEAE8]'
+         //             }`}
+         //          >
+         //             {value}
+         //          </span>
+         //       );
+         //    },
+         // },
          {
             Header: 'Action',
             accessor: 'action',
             Cell: ({ value }) => (
-               <BasicMenu id={value} viewLink={`/products/products/fixedSavings/${value}`} />
+               <BasicMenu id={value} viewLink={`/products/products/goalSavings/${value}`} />
             ),
          },
       ],
@@ -253,17 +250,17 @@ const FixedSavings = ({personalData }) => {
     */
    let rows;
    // check if personalSavingData is an array
-   if (typeof personalData === 'object' &&
-   personalData && Array.isArray(personalData) ) {
-      rows = personalData.map((item) => {
+   if (typeof goalData === 'object' &&
+   goalData && Array.isArray(goalData) ) {
+      rows = goalData.map((item) => {
      
          return {
             user: [item.name, 'person1'],
-            service: item?.transaction_history[0]?.transaction_type,
-            amount: item?.transaction_history[0]?.amount,
-            paymentMethod: item?.transaction_history[0]?.payment_type,
-            date: item?.transaction_history[0]?.transaction_time,
-            status: item.transaction_history[0]?.status,
+            service: item?.deposit_account_details?.type,
+            amount: item?.autosave_settings?.target_amount,
+            paymentMethod: item?.deposit_account_type.toUpperCase(),
+            date: item?.autosave_settings?.start_date,
+            // status: item.transaction_history[0]?.status,
             action: item.account_id
             
          };
@@ -301,15 +298,15 @@ const FixedSavings = ({personalData }) => {
                <SVG.DoubleRight />
                <span>Products</span>
                {/* <SVG.DoubleRight />
-               <span>Fixed Savings</span> */}
+               <span>Life Safe</span> */}
                <SVG.DoubleRight />{' '}
-               <span className='text-[#999999]'>Fixed Safe</span>
+               <span className='text-[#999999]'>Goal Safe</span>
                
             </span>
          }
-         title='Fixed Safe'
+         title='Goal Safe'
       >
-         <SubPageHeader label='Fixed Safe' />
+         <SubPageHeader label='Goal Safe' />
 
          <div className='md:flex md:justify-between md:items-center mt-2.5 md:mt-5 mb-5 md:mb-10'>
             <div className='space-x-2.5 lg:space-x-5'>
@@ -342,7 +339,7 @@ const FixedSavings = ({personalData }) => {
          >
             
            {
-         //   personalData.map((personal) => {
+         //   goalData.map((personal) => {
 
             <div>
             <div className='flex justify-center'>
@@ -410,15 +407,11 @@ const FixedSavings = ({personalData }) => {
             </div>
 
 
-           }
-           
-              
-
-                
+           }           
         
          </Modals>
       </Layout>
    );
 };
 
-export default FixedSavings;
+export default goalSavings;
