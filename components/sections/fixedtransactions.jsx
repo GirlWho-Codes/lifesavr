@@ -5,6 +5,8 @@ import {  SVG } from '../index';
 import React, { useEffect, useMemo, useState } from 'react';
 import { DataTable, SubPageHeader, Layout } from '../../components';
 import { useRouter } from 'next/router';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import Link from 'next/link';
 
 export const PersonalInfo = ({ personalData }) => {
    const router = useRouter();

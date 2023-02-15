@@ -27,17 +27,17 @@ export const GroupAvatars = ({ images }) => {
             </>
          ) : (
             <>
-               <img
+               <Image
                   className='w-[2.5rem] h-[2.5rem] rounded-xl border-4 border-white dark:border-gray-800'
                   src='/images/person1.png'
                   alt=''
                />
-               <img
+               <Image
                   className='w-[2.5rem] h-[2.5rem] rounded-xl border-4 border-white dark:border-gray-800'
                   src='/images/person2.png'
                   alt=''
                />
-               <img
+               <Image
                   className='w-[2.5rem] h-[2.5rem] rounded-xl border-4 border-white dark:border-gray-800'
                   src='/images/person3.png'
                   alt=''

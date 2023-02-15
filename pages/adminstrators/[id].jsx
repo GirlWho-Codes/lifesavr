@@ -82,7 +82,7 @@ export default function GoalSavings({ adminData }) {
             </div>
                       
          </div>
-         <div className="p-5 col-span-1 flex flex items-center justify-between gap-5 rounded-xl h-full border-2 border-[#FF4500]">
+         <div className="p-5 col-span-1 flex items-center justify-between gap-5 rounded-xl h-full border-2 border-[#FF4500]">
           {/* <div className='flex flex-row gap-80 items-stretch justify-between'> */}
           <div className='flex justify-center items-center gap-5 sm:gap-10'>
                <Image
@@ -122,7 +122,7 @@ export default function GoalSavings({ adminData }) {
              
              <div className='flex gap-11 '>
              <p>Priviledges</p>
-             <p>{adminData?.role?.privileges?.map((item) => <ul>{item.name}</ul>)}</p>
+             <p>{adminData?.role?.privileges?.map((item) => <ul key={item.id}>{item.name}</ul>)}</p>
              </div>
              
             </div>
