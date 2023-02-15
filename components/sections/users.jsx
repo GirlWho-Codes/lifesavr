@@ -2,8 +2,11 @@ import { Button } from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { SVG } from '../index';
+import { useRouter } from 'next/router';
 
 export const PersonalInfo = ({ userData }) => {
+   const router = useRouter();
+   console.log(userData)
    const details = [
       { title: 'Phone Number', value: userData.phone_number },
       { title: 'Email', value: userData.email },
@@ -16,16 +19,37 @@ export const PersonalInfo = ({ userData }) => {
       { title: 'Country', value: userData.null },
    ];
   
-   const handleDeactivateAccount = () => {
-      axios
-         .post('/api/users/deactivateUser', { id: userData.id })
+   const handleDeactivateAccount = async () => {
+      const id = userData.id
+      console.log(id)
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+      const bearerToken = process.env.NEXT_PUBLIC_BEARER_TOKEN;
+      const deviceToken = process.env.NEXT_PUBLIC_DEVICE_TOKEN;
+
+      const instance = axios.create({
+         baseURL: `${baseUrl}`,
+         headers: {
+            Authorization: `Bearer ${bearerToken} `,
+            "device-token": deviceToken
+         }
+      });
+     
+      await instance
+         .post(`/api/v1/admin/users/delete/${id}`, {status: 'deactivated'})
+         
          .then((res) => {
             console.log(res);
+            router.push('/users')
+            // router.replace(router.asPath)
             toast.success('User deactivated successfully');
+            
+
+            return res.data
+            
          })
          .catch((err) => {
             console.log(err);
-            toast.error('Error deactivating user');
+           
          });
    };
 
@@ -56,13 +80,13 @@ export const PersonalInfo = ({ userData }) => {
 export const PersonalSaving = ({ userData }) => {
    console.log(userData)
    const details = [
-      { title: 'Safe method', value: userData.name },
-      { title: 'Fund source', value: userData.null },
-      { title: 'Withdrawal type', value: userData.null },
-      { title: 'Withdrawal account', value: userData.null },
-      { title: 'Current balance', value: userData.balance },
+      { title: 'Safe method', value: userData?.name },
+      { title: 'Fund source', value: userData?.null },
+      { title: 'Withdrawal type', value: userData?.null },
+      { title: 'Withdrawal account', value: userData?.null },
+      { title: 'Current balance', value: userData?.balance },
    ];
-   console.log(userData.name)
+   // console.log(userData.name)
    return (
       <div className='p-5 space-y-5 w-full max-w-lg'>
          {details.map((detail, i) => (

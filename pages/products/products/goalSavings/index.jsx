@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { tableSearch } from '../../../../utils/tableSearch';
 import { DataTable, Layout,  LabelInput, SVG, SubPageHeader } from "../../../../components"
-import {Modals} from '../../../../components/modal'
+// import {Modals} from '../../../../components/modal'
 
 
 /**
@@ -331,85 +331,6 @@ const goalSavings = ({goalData }) => {
          />
 
 
-         <Modals
-            open={modalOpen}
-            setOpen={setModalOpen}
-            loading={loading}
-            title='Transaction detail'          
-         >
-            
-           {
-         //   goalData.map((personal) => {
-
-            <div>
-            <div className='flex justify-center'>
-               {/* <div>user: {[item.name, 'person1']}</div>
-               <img src={'person 1'} alt="" /> */}
-               {/* <p>{personal.name}</p> */}
-               <p>user</p>
-            </div>
-            <div className='flex flex-col gap-10'>
-
-            <div className='flex justify-between'>
-               <div className=''>
-                  <h4>Transaction Date</h4>
-                  <p></p>
-               </div>
-
-               <div>
-                  <h4>Transaction Time</h4>
-                  <p></p>
-               </div>
-            </div>
-
-
-            <div className='flex justify-between'>
-               <div className=''>
-                  <h4>Transaction Amount</h4>
-                  <p></p>
-               </div>
-
-               <div>
-                  <h4>Transaction Reference</h4>
-                  <p></p>
-               </div>
-            </div>
-
-            <div className='flex justify-between '>
-               <div className=''>
-                  <h4>Transaction Type</h4>
-                  <p></p>
-               </div>
-
-               <div>
-                  <h4>Charges</h4>
-                  <p></p>
-               </div>
-            </div>
-
-
-            <div className='flex justify-between'>
-               <div className=''>
-                  <h4>Transaction Date</h4>
-                  <p></p>
-               </div>
-
-               <div>
-                  <h4>Transaction Date</h4>
-                  <p></p>
-               </div>
-            </div>
-
-
-
-            </div>
-
-            </div>
-
-
-           }           
-        
-         </Modals>
       </Layout>
    );
 };
