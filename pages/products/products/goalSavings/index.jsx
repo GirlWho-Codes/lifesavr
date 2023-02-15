@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { tableSearch } from '../../../../utils/tableSearch';
 import { DataTable, Layout,  LabelInput, SVG, SubPageHeader } from "../../../../components"
-// import {Modals} from '../../../../components/modal'
+import {Modals} from '../../../../components/modal'
 
 
 /**
@@ -50,19 +50,19 @@ export async function getServerSideProps() {
    
 }
 
-const goalSavings = ({goalData }) => {
+const GoalSavings = ({goalData }) => {
 
    console.log(
       goalData
    );
-   const [filter, setFilter] = useState('all transactions');
-   const [modalOpen, setModalOpen] = useState(false);
-   const [searchResult, setSearchResult] = useState([]);
-   const [loading, setLoading] = useState(false);
+   const [filter, setFilter] = React.useState('all transactions');
+   const [modalOpen, setModalOpen] = React.useState(false);
+   const [searchResult, setSearchResult] = React.useState([]);
+   const [loading, setLoading] = React.useState(false);
    const searchTerm = useSelector((state) => state.searchTerm);
-   const [transactionDate, setTransactionDate] = useState("Oct 4, 2020");
-   const [transactionTime, setTransactionTime] = useState("2:14pm");
-   const [transactionType, setTransactionType] = useState("2:14pm");
+   const [transactionDate, setTransactionDate] = React.useState("Oct 4, 2020");
+   const [transactionTime, setTransactionTime] = React.useState("2:14pm");
+   const [transactionType, setTransactionType] = React.useState("2:14pm");
 
 
    function BasicMenu({ viewLink = '', id = '' }) {
@@ -331,8 +331,87 @@ const goalSavings = ({goalData }) => {
          />
 
 
+         <Modals
+            open={modalOpen}
+            setOpen={setModalOpen}
+            loading={loading}
+            title='Transaction detail'          
+         >
+            
+           {
+         //   goalData.map((personal) => {
+
+            <div>
+            <div className='flex justify-center'>
+               {/* <div>user: {[item.name, 'person1']}</div>
+               <img src={'person 1'} alt="" /> */}
+               {/* <p>{personal.name}</p> */}
+               <p>user</p>
+            </div>
+            <div className='flex flex-col gap-10'>
+
+            <div className='flex justify-between'>
+               <div className=''>
+                  <h4>Transaction Date</h4>
+                  <p></p>
+               </div>
+
+               <div>
+                  <h4>Transaction Time</h4>
+                  <p></p>
+               </div>
+            </div>
+
+
+            <div className='flex justify-between'>
+               <div className=''>
+                  <h4>Transaction Amount</h4>
+                  <p></p>
+               </div>
+
+               <div>
+                  <h4>Transaction Reference</h4>
+                  <p></p>
+               </div>
+            </div>
+
+            <div className='flex justify-between '>
+               <div className=''>
+                  <h4>Transaction Type</h4>
+                  <p></p>
+               </div>
+
+               <div>
+                  <h4>Charges</h4>
+                  <p></p>
+               </div>
+            </div>
+
+
+            <div className='flex justify-between'>
+               <div className=''>
+                  <h4>Transaction Date</h4>
+                  <p></p>
+               </div>
+
+               <div>
+                  <h4>Transaction Date</h4>
+                  <p></p>
+               </div>
+            </div>
+
+
+
+            </div>
+
+            </div>
+
+
+           }           
+        
+         </Modals>
       </Layout>
    );
 };
 
-export default goalSavings;
+export default GoalSavings;

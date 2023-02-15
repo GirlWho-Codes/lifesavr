@@ -86,7 +86,7 @@ const ModalHeaders = ({ children, close }) => {
       {children}
 
       <button className="p-0 bg-white w-10 h-10 text- absolute top-0 right-10 sm:right-0 md:right-[-15px]" onClick={close}>
-        <CloseIcon  />
+        {/* <CloseIcon  /> */}
       </button>
     </div>
   );
